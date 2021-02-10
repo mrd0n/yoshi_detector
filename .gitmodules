@@ -1,3 +1,6 @@
 [submodule "coco-manager"]
 	path = coco-manager
 	url = https://github.com/immersive-limit/coco-manager.git
+[submodule "yolov5"]
+	path = yolov5
+	url = https://github.com/ultralytics/yolov5.git
