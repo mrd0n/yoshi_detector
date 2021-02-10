@@ -1,1 +1,15 @@
 My config of YoloV5 trained to find Yoshi at the front door
+
+Python environment:
+conda activate yolov5
+
+labelImg was used to label the training images
+
+To Train:
+python train.py --img 640 --batch 1 --epochs 200 --data ./data/yoshi.yaml --cfg ./models/yolov5m.yaml --weights '' --device 0
+
+To Run:
+start tmux
+./detect-yoshi.sh
+
+
