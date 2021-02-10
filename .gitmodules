@@ -1,0 +1,3 @@
+[submodule "coco-manager"]
+	path = coco-manager
+	url = https://github.com/immersive-limit/coco-manager.git
