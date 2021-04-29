@@ -1,2 +1,6 @@
 [video]
-url = 'rtsp://XUsernameX:XPasswordX@10.0.0.235:554/ch01/0'
+url=rtsp://XUsernameX:XPasswordX@10.0.0.235:554/ch01/0
+
+[instagram]
+username=XXXXXXXXXX'
+password=VPyZZe041mQEGCn12p
