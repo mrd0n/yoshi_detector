@@ -1,9 +1,11 @@
 #yoshi imports
 import logging
 import os
+import subprocess
 from datetime import datetime
 from configparser import ConfigParser
 import sys
+from instabot import Bot
 sys.path.append('yolov5')
 sys.path.append('yolov5/utils')
 sys.path.append('yolov5/models')
@@ -199,6 +201,7 @@ if __name__ == '__main__':
     for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
     logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+    bot = Bot()
 
     while True:
         foundYoshi = False
@@ -218,16 +221,30 @@ if __name__ == '__main__':
             logString += ': Found Yoshi!'
             print(logString)
             logging.info(logString)
+
+            # Play cat song on Sonos
+            os.system('curl -s http://172.16.1.178/apps/api/48/trigger?access_token=b3c3d9ca-21e8-4c27-a1b1-f18462e6a948 > /dev/null')
+            time.sleep(1)
+
+            for x in range(5):   #Flash lights
+                os.system('curl -s http://172.16.1.178/apps/api/49/trigger?access_token=c4da3ad3-443f-449c-9e3c-9016aea40f23 > /dev/null')
+                time.sleep(3.5)
+
+            # Post to Instagram
+            if os.path.exists("config/YoshiDetector_uuid_and_cookie.json"):
+                os.remove("config/YoshiDetector_uuid_and_cookie.json")
+            bot.login(username = 'YoshiDetector',
+                      password = 'VPyZZe041mQEGCn12p')
+            bot.upload_photo(filePath + '/frame.jpg', caption ='**Yoshi Here** - ' + now.strftime('%d-%m-%Y-%H:%M:%S') + ' \#letmein')
+            bot.logout()
+            os.rename(filePath + '/frame.jpg.REMOVE_ME', filePath + '/frame.jpg')
+
             # Send email of the detected frame
             os.system('echo "***** Yoshi detected! *****\n" | mutt -s "Yoshi here!" -a ' + filePath + '/frame.jpg -- don@munroe.ca')
             os.rename(filePath + '/frame.jpg', filePath + '/frame-' + now.strftime("%d-%m-%Y-%H:%M:%S") + '.jpg')
             print('***** Renaming ' + filePath + '/frame.jpg to ' + filePath + '/frame-' + now.strftime("%d-%m-%Y-%H:%M:%S") + '.jpg')
-            # Play cat song on Sonos
-            os.system('curl -s http://172.16.1.178/apps/api/48/trigger?access_token=b3c3d9ca-21e8-4c27-a1b1-f18462e6a948 > /dev/null')
-            time.sleep(1)
-            for x in range(5):   #Flash lights
-                os.system('curl -s http://172.16.1.178/apps/api/49/trigger?access_token=c4da3ad3-443f-449c-9e3c-9016aea40f23 > /dev/null')
-                time.sleep(3.5)
+
+            #wait for some time before detection starts again
             time.sleep(60)
         else:
             logString += ": No Yoshi"
